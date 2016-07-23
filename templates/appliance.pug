@@ -1,0 +1,80 @@
+doctype html
+html(lang="en")
+  head
+    title= pageTitle
+    meta(charset="utf-8")
+    style.
+      *{
+        margin: 0;
+        padding: 0;
+      }
+      body{
+        font-size: 14pt;
+        font-family: sans-serif;
+        line-height: 1.15em;
+        width: 21.0cm;
+        height: 29.7cm;
+        margin: 0 auto;
+        padding: 2.5cm 2.5cm 2.0cm 2.5cm;
+      }
+
+      .one-line{
+        margin-top: 1.15em;
+      }
+      .two-lines{
+        margin-top: 2.30em;
+      }
+      .three-lines{
+        margin-top: 3.45em;
+      }
+      .four-lines{
+        margin-top: 4.60em;
+      }
+      #headline{
+        font-weight: bold;
+      }
+  body
+    #personal
+      p= name
+      p= address
+      p= city
+      p= userEmail
+      p= mobile
+    #company.four-lines
+      p= companyName
+      p= companyAddress
+      p= companyCity
+    #headline.four-lines
+      p Bewerbung Stellenanzeige #{jobDescription}
+    #greeting.two-lines
+      p Sehr geehrte Damen und Herren,
+    #introduction.two-lines
+      p.
+         Sie wollen klare Arbeitsresultate sehen? Sie erwarten von einem Entwickler Einfallsreichtum und Tatendrang? Dann lassen sie mich Ihnen erklären, wie diese Bewerbung
+         erstellt wurde und Sie erreicht hat.
+    #myself.one-line
+      p.
+        Seit mehr als 10 Jahren entwickle Ich Software. Mehrere Jahren verbrachte ich einen Großteil meiner
+        Freizeit damit, Programmiersprachen, Objektorientierung, funktionale Programmierung und dergleichen
+         zu erlernen. Durch eine Ausbildung zum Fachinformatiker für Anwendungsentwickler mit IHK Abschluss im Januar 2016
+        konnte ich mein Hobby zum Beruf machen.
+    #myself-part-two.one-line
+      p.
+        Nun dazu, wie diese Bewerbung Sie erreichte. Trotz meiner geringen Berufserfahrung, verfüge Ich über ein
+        großes Wissen im Bereich der Softwareentwicklung. Um Sie von meinen Fähigkeiten zu überzeugen, erstellte
+        ich ein Programm, welches eine Anfrage an die öffentlich zugängliche Schnittstelle von www.xing.com stellt,
+        Jobangebote für bestimmte Schlüsselwörter lädt, mit diesen Daten eine Vorlage füllt, diese Vorlage in ein
+        PDF konvertiert und automatisiert verschickt. Ich gebe zu, das dieses Vorgehen recht radikal erscheint,
+        aber irgendwie muss ich mich ja schließlich von Masse der Einheitsbreientwickler abheben. Falls Sie Interesse
+        am Quelltext des Programms haben, können Sie diesen unter www.github.com/Rakin05 finden.
+    #outro.one-line
+      p.
+        Wenn ich Ihr Interesse an mir wecken konnte, überzeuge ich Sie gerne in einem persönlichen Gespräch von
+        meinen Qualitäten.
+      p.one-line.
+        Sollten Sie Fragen haben zu meiner Person haben, stehe ich selbstverständlich jederzeit per E-Mail oder telefonisch zu Verfügung.
+    #footer.two-lines
+      p.
+        Ich verbleibe mit einem freundlichen Gruß und freue mich von Ihnen zu hören.
+    #sign.one-line
+      p= name

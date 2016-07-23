@@ -1,0 +1,19 @@
+{
+  "name": "something...somthing",
+  "address": "something...somthing",
+  "city": "something...somthing",
+  "email": "something...somthing",
+  "mobile": "something...somthing",
+  "emailConfig":{
+    "host": "smtp.gmail.com",
+    "port": 993,
+    "secure": true,
+    "username": "user@gmail.com",
+    "password": "password"
+  },
+  "attachments":[{
+      "path": "/home/user/attachment.pdf",
+      "name": "attachment.pdf",
+      "type": "application/pdf"
+  }]
+}

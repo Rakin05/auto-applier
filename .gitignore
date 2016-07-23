@@ -1,0 +1,6 @@
+config.json
+jobs.json
+node_modules
+attachments
+output/*
+.idea
