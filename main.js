@@ -7,8 +7,10 @@ const program = require('commander');
 const request = require('request-promise');
 const cheerio = require('cheerio')
 const wkhtmltopdf = require('wkhtmltopdf');
-const emailjs = require('emailjs');
+const nodemailer = require("nodemailer");
 const merge = require('merge');
+const sleep = require('sleep');
+const _ = require('lodash')
 
 program
   .option('-f, --file <path>', 'File with appliances from XING')
@@ -24,13 +26,7 @@ const attachmentsFolder = `${__dirname}/attachments`
 
 const config = JSON.parse(fs.readFileSync(program.config));
 
-const emailServer = emailjs.server.connect({
-  user: config.emailConfig.username,
-  password: config.emailConfig.password,
-  host: config.emailConfig.host,
-  ssl: true,
-  port : 465
-});
+const smtpTransport = nodemailer.createTransport(`smtps://${config.emailConfig.username}%40gmail.com:${config.emailConfig.password}@smtp.gmail.com`);
 
 const file = fs.readFileSync(program.file);
 const fileJson = JSON.parse(file);
@@ -40,6 +36,7 @@ const templateData = Rx.Observable.from(jobs)
   .filter(job => job.jobDescription.indexOf('Senior') === -1)
   .filter(job => job.jobDescription.indexOf('Student') === -1)
   .filter(job => job.jobDescription.indexOf('Praktikum') === -1)
+  .filter(job => job.jobDescription !== undefined)
   .filter(job => job.xingAddress !== undefined)
   .map(getSite)
   .concatAll()
@@ -48,8 +45,7 @@ const templateData = Rx.Observable.from(jobs)
   .filter(job => job.email !== '')
   .map(createApplianceTemplate.bind(undefined, applianceTemplateFile))
   .map(createAppliancePDF.bind(undefined, outputFolder))
-  .take(1)
-  .subscribe(sendEmail.bind(undefined, emailServer, outputFolder, attachmentsFolder));
+  .subscribe(sendEmail.bind(undefined, outputFolder, attachmentsFolder));
 
 function createApplianceTemplate(applianceTemplate, job){
   const userData = {
@@ -96,30 +92,31 @@ function extractStreet(job){
 }
 
 function createAppliancePDF(outputFolder, job){
-  const fileName = `${outputFolder}/Anschreiben_${job.companyName}.pdf`
+  const fileName = `${outputFolder}/Anschreiben_${job.companyName.replace(' ', '-').replace('.', '')}.pdf`
   wkhtmltopdf(job.appliance, {output: fileName})
   job.applianceFile = fileName;
   return job;
 }
 
-function sendEmail(emailServer, outputFolder, attachmentsFolder, job){
-  const message = emailjs.message.create({
-    text: `Sehr geehrte Damen und Herren, \n\n
-    Bitte entnehmen Sie dem Anhang meine Bewerbung für ihre Stellenanzeige "${job.jobDescription} bei www.xing.com\n\n\n
-    Ich verbleibe mit einem freundlichen Gruß und freue mich von ihnen zu höhren.\n\n
-    ${config.name}`,
-    from: `${config.name} <${config.email}>`,
-    to: `${config.email}`,
-    subject: `Bewerbung ${job.jobDescription}`
-  });
-  console.log(message);
-  message.attach(job.applianceFile, 'application/pdf', 'Anschreiben.pdf');
-  config.attachments.forEach(attachment => {
-     message.attach(attachment.path, attachment.type, attachment.name);
+function sendEmail(outputFolder, attachmentsFolder, job){
+  const emailOptions = {
+      from: `${config.email}`,
+      to: `${job.email}`,
+      subject: `Bewerbung ${job.jobDescription}`,
+      text: `Sehr geehrte Damen und Herren, \n\nBitte entnehmen Sie dem Anhang meine Bewerbung für ihre Stellenanzeige "${job.jobDescription}" bei www.xing.com\n\n\nIch verbleibe mit einem freundlichen Gruß und freue mich von ihnen zu höhren.\n\n`,
+      attachments: [
+        {
+            path: job.applianceFile
+        }
+      ]
+    };
+  config.attachments.forEach(a => {
+    emailOptions.attachments = [...emailOptions.attachments, {path: a.path}]
   })
-  emailServer.send(message, function(err){
-    if(err !== undefined){
-      console.log(err);
-    }
+  smtpTransport.sendMail(emailOptions,function(err, result){
+        if(err){
+          console.log(err);
+        }
+        else { console.log(result);}
   });
 }

@@ -5,10 +5,7 @@
   "email": "something...somthing",
   "mobile": "something...somthing",
   "emailConfig":{
-    "host": "smtp.gmail.com",
-    "port": 993,
-    "secure": true,
-    "username": "user@gmail.com",
+    "username": "user,
     "password": "password"
   },
   "attachments":[{
